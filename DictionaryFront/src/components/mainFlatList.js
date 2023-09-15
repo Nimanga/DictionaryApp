@@ -1,24 +1,46 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList , Button} from 'react-native';
 import DatabaseOperations from './dataBaseConnection';
+import DirectionBtn from './directionBtn';
 
 const MainFlatList = () => {
-  const [temWordLists, setTemWordLists] = useState([]);
+  const [temEnWordLists, setTemEnWordLists] = useState([]);
+  const [temSnWordLists, setTemSnWordLists] = useState([]);
+  const [changeLists, setChangeLists] = useState([]);
 
-  const handleWordsListed = (wordList) => {
-    setTemWordLists(wordList);
+  const handleEnWordsListed = (wordList1) => {
+    setTemEnWordLists(wordList1);
   };
+ 
+
+  const handleSnWordsListed = (wordList2) =>{
+    setTemSnWordLists(wordList2);
+  }
+
+  const changeEnData =()=>{
+    setChangeLists(temEnWordLists);
+  }
+  const changeSnData = () =>{
+    setChangeLists(temSnWordLists);
+  }
+  // console.log(temEnWordLists);
+  // console.log(temSnWordLists);
 
   return (
     <View>
-      <Text>Words:</Text>
-      <DatabaseOperations onWordsListed={handleWordsListed} />
+     
+      <DatabaseOperations  onSnWordsListed={handleSnWordsListed} onEnWordsListed = {handleEnWordsListed} />
+      <DirectionBtn 
+        changeEnData={changeEnData} 
+        changeSnData={changeSnData} 
+      />
+      <Text style={{color:'#333333'}}>Words:</Text>
       <FlatList
-        data={temWordLists}
+        data={changeLists}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View>
-            <Text>{item}</Text>
+            <Text style={{color:'#333333'}}>{item}</Text>
           </View>
         )}
       />
@@ -30,7 +52,8 @@ export default MainFlatList;
 
 
 
-
+{/* <Button title="English" onPress={changeEnData}/>
+<Button title="Sinhala" onPress={changeSnData}/> */}
 // import React, { useEffect, useState } from 'react';
 // import { View, Text, FlatList } from 'react-native';
 // import SQLite from 'react-native-sqlite-storage';

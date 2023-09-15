@@ -1,29 +1,23 @@
 import { View, Text, Button, StyleSheet ,TouchableOpacity } from 'react-native'
-import React from 'react'
-import {  TextInput } from 'react-native-gesture-handler'
+import React, {useState} from 'react'
 import MainFlatList from '../components/mainFlatList'
-import DirectionBtn from '../components/directionBtn'
 import SearchComponent from '../components/searchComponent'
-// import TestDb from './testDb'
 
 
 
 
 const HomeScreen = () => {
+  const [isMainFlatListEnable, setIsFlatListEnable] = useState(true);
+ 
+  const onPressSearch = ()=>{
+    setIsFlatListEnable(false);
+  }
   return (
     <>
-    <View style={style.mainView}>
-     <View style={style.View}>
-       <TextInput placeholder='Search for definition' style={style.textInput} />
-       <Button title='Search' />
-     </View>
+    <View style={{flex:1, gap:20, marginTop:30, marginStart:15, marginEnd:20}}>
+    <SearchComponent onPressSearch={onPressSearch}/>
+    {isMainFlatListEnable && <MainFlatList />}
     </View>
-    <DirectionBtn/>
-    {/* <TestDb/> */}
-    <SearchComponent/>
-    <MainFlatList/>
-  
-
     </>
   )
 }

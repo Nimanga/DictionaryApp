@@ -4,12 +4,17 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useState } from 'react';
 
 
-const DirectionBtn = () => {
+const DirectionBtn = ({changeEnData, changeSnData}) => {
 
     const [activeBtn , setActiveBtn] = useState(false);
 
     const handlePress = (value) =>{
         setActiveBtn(value);
+        if(value){
+            changeSnData();
+        }else{
+            changeEnData();
+        }
         // to be implement data display
     }
 
