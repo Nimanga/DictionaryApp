@@ -12,10 +12,13 @@ const HomeScreen = () => {
   const onPressSearch = ()=>{
     setIsFlatListEnable(false);
   }
+  const onPressClear = ()=>{
+    setIsFlatListEnable(true)
+  }
   return (
     <>
     <View style={{flex:1, gap:20, marginTop:30, marginStart:15, marginEnd:20}}>
-    <SearchComponent onPressSearch={onPressSearch}/>
+    <SearchComponent onPressSearch={onPressSearch} onPressClear={onPressClear}/>
     {isMainFlatListEnable && <MainFlatList />}
     </View>
     </>

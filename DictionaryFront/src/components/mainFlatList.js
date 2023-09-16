@@ -1,59 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList , Button} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, FlatList, Button} from 'react-native';
 import DatabaseOperations from './dataBaseConnection';
 import DirectionBtn from './directionBtn';
 
 const MainFlatList = () => {
+  useEffect(() => {
+    changeEnData();
+  }, []);
+
   const [temEnWordLists, setTemEnWordLists] = useState([]);
   const [temSnWordLists, setTemSnWordLists] = useState([]);
   const [changeLists, setChangeLists] = useState([]);
 
-  const handleEnWordsListed = (wordList1) => {
+  const handleEnWordsListed = wordList1 => {
     setTemEnWordLists(wordList1);
   };
- 
 
-  const handleSnWordsListed = (wordList2) =>{
+  const handleSnWordsListed = wordList2 => {
     setTemSnWordLists(wordList2);
-  }
+  };
 
-  const changeEnData =()=>{
+  const changeEnData = () => {
     setChangeLists(temEnWordLists);
-  }
-  const changeSnData = () =>{
+  };
+  const changeSnData = () => {
     setChangeLists(temSnWordLists);
-  }
+  };
   // console.log(temEnWordLists);
   // console.log(temSnWordLists);
 
   return (
-    <View>
-     
-      <DatabaseOperations  onSnWordsListed={handleSnWordsListed} onEnWordsListed = {handleEnWordsListed} />
-      <DirectionBtn 
-        changeEnData={changeEnData} 
-        changeSnData={changeSnData} 
+    <View style={{flex: 1, gap: 20}}>
+      <DatabaseOperations
+        onSnWordsListed={handleSnWordsListed}
+        onEnWordsListed={handleEnWordsListed}
       />
-      <Text style={{color:'#333333'}}>Words:</Text>
-      <FlatList
-        data={changeLists}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <Text style={{color:'#333333'}}>{item}</Text>
-          </View>
-        )}
-      />
+      <DirectionBtn changeEnData={changeEnData} changeSnData={changeSnData} />
+
+      <View>
+        <FlatList
+          data={changeLists}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => (
+            <View
+              style={{
+                padding: 7,
+                margin: 10,
+                backgroundColor: '#4668A6',
+                borderRadius: 10,
+                marginStart: 12,
+                marginEnd: 12,
+              }}>
+              <Text style={{color: '#ffffff', marginStart: 5, fontWeight: 600}}>
+                {item}
+              </Text>
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 };
 
 export default MainFlatList;
 
-
-
-{/* <Button title="English" onPress={changeEnData}/>
-<Button title="Sinhala" onPress={changeSnData}/> */}
+{
+  /* <Button title="English" onPress={changeEnData}/>
+<Button title="Sinhala" onPress={changeSnData}/> */
+}
 // import React, { useEffect, useState } from 'react';
 // import { View, Text, FlatList } from 'react-native';
 // import SQLite from 'react-native-sqlite-storage';
