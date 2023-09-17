@@ -24,71 +24,71 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       },
     );
 
-    // const insertDataFromJSON1 = () => {
-    //   console.log('Data insert');
-    //   try {
-    //     const jsonData = require('../../sn2en.json');
+    const insertDataFromJSON1 = () => {
+      Alert.alert('insert Data');
+      console.log('Data insert');
+      try {
+        const jsonData = require('../../android/app/src/main/assets/sn2en.json');
 
-    //     db.transaction(async tx => {
-    //       await tx.executeSql(
-    //         'CREATE TABLE IF NOT EXISTS snWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
-    //         [],
-    //       );
-    //       for (const item of jsonData) {
-    //         await tx.executeSql(
-    //           'INSERT INTO snWords (word, definition) VALUES (?, ?)',
-    //           [item.word, JSON.stringify(item.definitions)],
-    //         );
-    //       }
-    //     });
+        db.transaction(async tx => {
+          await tx.executeSql(
+            'CREATE TABLE IF NOT EXISTS snWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
+            [],
+          );
+          for (const item of jsonData) {
+            await tx.executeSql(
+              'INSERT INTO snWords (word, definition) VALUES (?, ?)',
+              [item.word, JSON.stringify(item.definitions)],
+            );
+          }
+        });
 
-    //     console.log('Data inserted successfully');
-    //     listSnWords();
-    //     listEnWords();
-    //   } catch (error) {
-    //     console.log('Error inserting data:', error);
-    //   }
-    // };
+        console.log('Data inserted successfully');
+      } catch (error) {
+        console.log('Error inserting data:', error);
+      }
+    };
 
-    // const insertDataFromJSON2 = () => {
-    //   console.log('Data insert');
-    //   try {
-    //     const jsonData = require('../../en2sn.json');
+    const insertDataFromJSON2 = () => {
+      Alert.alert('insert Data');
+      console.log('Data insert');
+      try {
+        const jsonData = require('../../android/app/src/main/assets/en2sn.json');
 
-    //     db.transaction(async tx => {
-    //       await tx.executeSql(
-    //         'CREATE TABLE IF NOT EXISTS enWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
-    //         [],
-    //       );
-    //       for (const item of jsonData) {
-    //         await tx.executeSql(
-    //           'INSERT INTO enWords (word, definition) VALUES (?, ?)',
-    //           [item.word, JSON.stringify(item.definitions)],
-    //         );
-    //       }
-    //     });
+        db.transaction(async tx => {
+          await tx.executeSql(
+            'CREATE TABLE IF NOT EXISTS enWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
+            [],
+          );
+          for (const item of jsonData) {
+            await tx.executeSql(
+              'INSERT INTO enWords (word, definition) VALUES (?, ?)',
+              [item.word, JSON.stringify(item.definitions)],
+            );
+          }
+        });
 
-    //     console.log('Data inserted successfully');
-    //   } catch (error) {
-    //     console.log('Error inserting data:', error);
-    //   }
-    // };
+        console.log('Data inserted successfully');
+      } catch (error) {
+        console.log('Error inserting data:', error);
+      }
+    };
 
-    // const dropTable = async () => {
-    //   console.log('DropTable');
-    //   try {
-    //     await db.transaction(async tx => {
-    //       tx.executeSql('DROP TABLE IF EXISTS enWords');
-    //       tx.executeSql('DROP TABLE IF EXISTS snWords');
-    //     });
+    const dropTable = async () => {
+      console.log('DropTable');
+      try {
+        await db.transaction(async tx => {
+          tx.executeSql('DROP TABLE IF EXISTS enWords');
+          tx.executeSql('DROP TABLE IF EXISTS snWords');
+        });
 
-    //     console.log('Tables dropped successfully');
-    //     // insertDataFromJSON1();
-    //     // insertDataFromJSON2();
-    //   } catch (error) {
-    //     console.error('Error dropping table:', error);
-    //   }
-    // };
+        console.log('Tables dropped successfully');
+        // insertDataFromJSON1();
+        // insertDataFromJSON2();
+      } catch (error) {
+        console.error('Error dropping table:', error);
+      }
+    };
 
     const listSnWords = async () => {
       try {
