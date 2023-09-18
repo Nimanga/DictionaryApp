@@ -1,8 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import {Alert, Text} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
-import {Alert} from 'react-native';
 
 const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const db = SQLite.openDatabase(
       {
@@ -11,26 +13,48 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       },
       () => {
         console.log('Database Connected');
-        Alert.alert('New Release Available');
+
         // dropTable();
         // insertDataFromJSON1();
-        // insertDataFromJSON2();
-        listSnWords();
-        listEnWords();
+
+        db.transaction(tx => {
+          tx.executeSql(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('enWords', 'snWords')",
+            [],
+            (tx, resultSet) => {
+              if (resultSet.rows.length === 2) {
+                // Both tables exist, no need to insert data from JSON
+                console.log('Tables already exist');
+                listSnWords();
+                listEnWords();
+              } else {
+                // At least one table is missing, insert data from JSON
+                insertDataFromJSON1();
+                insertDataFromJSON2();
+                listSnWords();
+                listEnWords();
+              }
+            },
+            error => {
+              console.log('Error checking tables:', error);
+            },
+          );
+        });
+
+        // listEnWords();
+        // listSnWords();
       },
       error => {
         console.log('Database Error', error);
-        Alert.alert('New Release Available');
       },
     );
 
-    const insertDataFromJSON1 = () => {
-      Alert.alert('insert Data');
+    const insertDataFromJSON1 = async () => {
       console.log('Data insert');
       try {
         const jsonData = require('../../android/app/src/main/assets/sn2en.json');
 
-        db.transaction(async tx => {
+        await db.transaction(async tx => {
           await tx.executeSql(
             'CREATE TABLE IF NOT EXISTS snWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
             [],
@@ -49,13 +73,13 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       }
     };
 
-    const insertDataFromJSON2 = () => {
+    const insertDataFromJSON2 = async () => {
       Alert.alert('insert Data');
       console.log('Data insert');
       try {
         const jsonData = require('../../android/app/src/main/assets/en2sn.json');
 
-        db.transaction(async tx => {
+        await db.transaction(async tx => {
           await tx.executeSql(
             'CREATE TABLE IF NOT EXISTS enWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
             [],
@@ -90,24 +114,25 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       }
     };
 
-    const listSnWords = async () => {
+    const listSnWords = () => {
       try {
         let sql = 'SELECT word FROM snWords';
+
         db.transaction(async tx => {
-          await tx.executeSql(
+          tx.executeSql(
             sql,
             [],
             (tx, resultSet) => {
               let tempSnWordLists = [];
 
-              for (let i = 0; i < 500; i++) {
+              for (let i = 0; i < 50; i++) {
                 const words = resultSet.rows.item(i).word;
                 tempSnWordLists.push(words);
               }
 
               // Pass the word list back to the parent component
               onSnWordsListed(tempSnWordLists);
-              Alert.alert('Sinhala ');
+              // Alert.alert('Sinhala');
             },
             error => {
               console.log('List Word error', error);
@@ -119,23 +144,24 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       }
     };
 
-    const listEnWords = async () => {
+    const listEnWords = () => {
       try {
         let sql = 'SELECT word FROM enWords';
         db.transaction(async tx => {
-          await tx.executeSql(
+          tx.executeSql(
             sql,
             [],
             (tx, resultSet) => {
               let tempEnWordLists = [];
 
-              for (let i = 0; i < 500; i++) {
+              for (let i = 0; i < 50; i++) {
                 const words = resultSet.rows.item(i).word;
                 tempEnWordLists.push(words);
               }
 
               // Pass the word list back to the parent component
               onEnWordsListed(tempEnWordLists);
+              setLoading(false);
             },
             error => {
               console.log('List Word error', error);
@@ -147,8 +173,18 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       }
     };
   }, []);
-
-  return null; // Since this component doesn't render anything
+  console.log(loading);
+  return (
+    <>
+      {loading ? (
+        <>
+          <Text></Text>
+        </>
+      ) : (
+        <></>
+      )}
+    </>
+  );
 };
 
 export default DatabaseConnection;

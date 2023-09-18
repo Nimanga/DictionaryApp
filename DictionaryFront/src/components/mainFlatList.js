@@ -30,11 +30,12 @@ const MainFlatList = () => {
   // console.log(temSnWordLists);
 
   return (
-    <View style={{flex: 1, gap: 20}}>
+    <View style={{flex: 1, gap: 12}}>
       <DatabaseOperations
         onSnWordsListed={handleSnWordsListed}
         onEnWordsListed={handleEnWordsListed}
       />
+
       <DirectionBtn changeEnData={changeEnData} changeSnData={changeSnData} />
 
       <View>
@@ -45,11 +46,12 @@ const MainFlatList = () => {
             <View
               style={{
                 padding: 7,
-                margin: 10,
+                margin: 9,
                 backgroundColor: '#4668A6',
                 borderRadius: 10,
                 marginStart: 12,
                 marginEnd: 12,
+                paddingStart: 15,
               }}>
               <Text style={{color: '#ffffff', marginStart: 5, fontWeight: 600}}>
                 {item}

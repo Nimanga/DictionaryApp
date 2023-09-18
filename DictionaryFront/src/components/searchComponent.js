@@ -1,14 +1,13 @@
 import React, {useState} from 'react';
-import {Button, View, Text, StyleSheet, Image} from 'react-native';
+import {Button, View, Text, StyleSheet, Image, FlatList} from 'react-native';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
-// import { Image } from 'react-native-reanimated/lib/typescript/Animated';
 import SQLite from 'react-native-sqlite-storage';
 
 const SearchComponent = ({onPressSearch, onPressClear}) => {
   const [inputValue, setInputValue] = useState('');
-  // const [definition, setDefinition] = useState(null);
   const [definition, setDefinition] = useState([]);
-  // const [words, setWords] = useState([]);
+  const [historyWord, setHistoryWord] = useState('');
+  // const [searchPressed, setSearchPressed] = useState(false);
 
   const db = SQLite.openDatabase(
     {
@@ -22,19 +21,19 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
     },
   );
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     const isSinhala = !/^[a-zA-Z0-9\s]*$/.test(inputValue);
 
     console.log('handleEnSearch');
 
-    await db.transaction(tx => {
+    db.transaction(tx => {
       const sqlQuery = !isSinhala
         ? 'SELECT definition FROM enWords WHERE word = ?'
         : 'SELECT definition FROM snWords WHERE word = ?';
 
       tx.executeSql(
         sqlQuery,
-        [inputValue],
+        [inputValue.toLowerCase()],
         (tx, results) => {
           if (results.rows.length > 0) {
             const definitions = results.rows.item(0).definition;
@@ -48,13 +47,14 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
         },
       );
     });
+    setHistoryWord([inputValue]);
     onPressSearch();
   };
 
   const clearInput = () => {
-    onPressClear();
     setInputValue('');
-    setDefinition([]);
+    onPressClear();
+    // setDefinition([]);
   };
 
   return (
@@ -63,18 +63,11 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
         <TextInput
           style={style.textInput}
           placeholder="Search a Word"
+          placeholderTextColor="#000000"
           value={inputValue}
           onChangeText={setInputValue} // This updates the searchTerm state as you type
         />
-        {inputValue !== '' ? (
-          <TouchableOpacity onPress={clearInput}>
-            <Image
-              source={require('../assets/images/close.png')}
-              style={{width: 25, height: 25}}></Image>
-          </TouchableOpacity>
-        ) : (
-          <Text></Text>
-        )}
+
         <TouchableOpacity
           onPress={handleSearch}
           style={{backgroundColor: '#3C598E', padding: 10, borderRadius: 10}}>
@@ -82,19 +75,54 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
         </TouchableOpacity>
       </View>
 
-      {inputValue !== '' && (
+      <View>
         <View>
-          {definition !== null ? (
-            definition.map((definition, index) => (
-              <Text style={{color: '#333333'}} key={index}>
-                {definition}
+          <View>
+            <Text style={{color: '#000000', fontWeight: '400'}}>
+              Recent Search Word :
+            </Text>
+            <View>
+              <Text
+                style={{
+                  backgroundColor: '#324B77',
+                  color: '#ffffff',
+                  marginTop: 12,
+                  paddingStart: 140,
+                  marginBottom: 1,
+                  marginStart: 12,
+                  marginEnd: 12,
+                  padding: 7,
+                  borderRadius: 10,
+                  fontWeight: 600,
+                  fontSize: 17,
+                }}>
+                {historyWord}
               </Text>
-            ))
-          ) : (
-            <Text>No definitions available</Text>
-          )}
+            </View>
+          </View>
+
+          <FlatList
+            data={definition}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <Text
+                style={{
+                  padding: 7,
+                  margin: 10,
+                  backgroundColor: '#486baa',
+                  borderRadius: 10,
+                  marginStart: 12,
+                  marginEnd: 12,
+                  paddingStart: 15,
+                  color: '#ffffff',
+                }}>
+                {item}
+              </Text>
+            )}
+            ListEmptyComponent={<Text></Text>}
+          />
         </View>
-      )}
+      </View>
     </View>
   );
 };
@@ -119,6 +147,7 @@ const style = StyleSheet.create({
     borderRadius: 10,
     textAlign: 'center',
     color: '#333333',
+    fontSize: 15,
   },
 });
 

@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Align button content vertically
     backgroundColor: '#B2CAF6',
     padding: 6,
-    margin: 5,
+    margin: 1,
     borderRadius: 8,
     marginStart: 25,
     marginEnd: 25,
