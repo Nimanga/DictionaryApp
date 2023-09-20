@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Text} from 'react-native';
+import {Alert, Text, View, ActivityIndicator, Modal} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 
 const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
@@ -48,7 +48,7 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
         console.log('Database Error', error);
       },
     );
-
+    //inset data to SQLite database from (sn2en)JSON file
     const insertDataFromJSON1 = async () => {
       console.log('Data insert');
       try {
@@ -73,8 +73,11 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       }
     };
 
+    //inset data to SQLite database from (en2sn)JSON file
     const insertDataFromJSON2 = async () => {
-      Alert.alert('insert Data');
+      Alert.alert(
+        'Please wait while we set up the database for the first time.',
+      );
       console.log('Data insert');
       try {
         const jsonData = require('../../android/app/src/main/assets/en2sn.json');
@@ -125,14 +128,13 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
             (tx, resultSet) => {
               let tempSnWordLists = [];
 
-              for (let i = 0; i < 50; i++) {
+              for (let i = 0; i < 100; i++) {
                 const words = resultSet.rows.item(i).word;
                 tempSnWordLists.push(words);
               }
 
               // Pass the word list back to the parent component
               onSnWordsListed(tempSnWordLists);
-              // Alert.alert('Sinhala');
             },
             error => {
               console.log('List Word error', error);
@@ -154,7 +156,7 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
             (tx, resultSet) => {
               let tempEnWordLists = [];
 
-              for (let i = 0; i < 50; i++) {
+              for (let i = 0; i < 100; i++) {
                 const words = resultSet.rows.item(i).word;
                 tempEnWordLists.push(words);
               }
@@ -178,7 +180,15 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
     <>
       {loading ? (
         <>
-          <Text></Text>
+          <Modal animationType="fade" transparent={false} visible={loading}>
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <ActivityIndicator size="large" />
+              <View style={{marginTop: 10}}>
+                <Text style={{color: '#000000'}}>Loading Data</Text>
+              </View>
+            </View>
+          </Modal>
         </>
       ) : (
         <></>

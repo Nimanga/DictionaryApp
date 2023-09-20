@@ -4,16 +4,13 @@ import DatabaseOperations from './dataBaseConnection';
 import DirectionBtn from './directionBtn';
 
 const MainFlatList = () => {
-  useEffect(() => {
-    changeEnData();
-  }, []);
-
   const [temEnWordLists, setTemEnWordLists] = useState([]);
   const [temSnWordLists, setTemSnWordLists] = useState([]);
   const [changeLists, setChangeLists] = useState([]);
 
   const handleEnWordsListed = wordList1 => {
     setTemEnWordLists(wordList1);
+    setChangeLists(wordList1);
   };
 
   const handleSnWordsListed = wordList2 => {
@@ -45,15 +42,22 @@ const MainFlatList = () => {
           renderItem={({item}) => (
             <View
               style={{
-                padding: 7,
-                margin: 9,
-                backgroundColor: '#4668A6',
+                padding: 8,
+                margin: 4,
+                backgroundColor: '#E0EAFB',
                 borderRadius: 10,
                 marginStart: 12,
                 marginEnd: 12,
                 paddingStart: 15,
               }}>
-              <Text style={{color: '#ffffff', marginStart: 5, fontWeight: 600}}>
+              <Text
+                style={{
+                  color: '#000000',
+                  marginStart: 5,
+                  fontWeight: 600,
+                  fontSize: 15,
+                  fontFamily: 'Roboto-Black',
+                }}>
                 {item}
               </Text>
             </View>
