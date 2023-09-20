@@ -8,6 +8,10 @@ const MainFlatList = () => {
   const [temSnWordLists, setTemSnWordLists] = useState([]);
   const [changeLists, setChangeLists] = useState([]);
 
+  const handleItemPress = item => {
+    setListWord(item);
+  };
+
   const handleEnWordsListed = wordList1 => {
     setTemEnWordLists(wordList1);
     setChangeLists(wordList1);
@@ -55,7 +59,7 @@ const MainFlatList = () => {
                   color: '#000000',
                   marginStart: 5,
                   fontWeight: 600,
-                  fontSize: 15,
+                  fontSize: 16,
                   fontFamily: 'Roboto-Black',
                 }}>
                 {item}

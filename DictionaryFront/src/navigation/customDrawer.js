@@ -17,22 +17,22 @@ const CustomDrawer = props => {
         }}>
         <Image
           source={logo}
-          style={{width: 75, height: 75, marginStart: 12, marginTop: 20}}
+          style={{width: 75, height: 75, marginStart: 15, marginTop: 20}}
         />
-        <Text
-          style={{
-            padding: 25,
-            marginTop: 10,
-            fontSize: 18,
-            marginStart: -12,
-            alignItems: 'center',
-            textAlign: 'center',
-            color: '#ffffff',
-            fontFamily: 'Roboto-Bold',
-            fontWeight: 800,
-          }}>
-          ENGLISH-SINHALA DICTIONARY
-        </Text>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Text
+            style={{
+              padding: 15, // Adjust the padding to your liking
+              fontSize: 18,
+              color: '#ffffff',
+              fontFamily: 'Roboto-Bold',
+              fontWeight: '800',
+              // textAlign: 'center',
+              flexWrap: 'wrap',
+            }}>
+            ENGLISH-SINHALA DICTIONARY
+          </Text>
+        </View>
       </View>
 
       <View style={{flex: 1}}>

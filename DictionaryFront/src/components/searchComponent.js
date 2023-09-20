@@ -6,7 +6,7 @@ import SQLite from 'react-native-sqlite-storage';
 const SearchComponent = ({onPressSearch, onPressClear}) => {
   const [inputValue, setInputValue] = useState('');
   const [definition, setDefinition] = useState([]);
-  const [historyWord, setHistoryWord] = useState('');
+  // const [historyWord, setHistoryWord] = useState('');
   const [noDefinition, setNoDefintion] = useState(false);
 
   const db = SQLite.openDatabase(
@@ -23,7 +23,6 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
 
   const ClearResults = () => {
     setDefinition([]);
-    setHistoryWord('Enter New Word');
     setInputValue('');
   };
 
@@ -61,7 +60,7 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
         },
       );
     });
-    setHistoryWord([inputValue]);
+    // setHistoryWord([inputValue]);
     onPressSearch();
   };
 
@@ -74,6 +73,8 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
           placeholderTextColor="#A9A9A9"
           value={inputValue}
           onChangeText={setInputValue} // This updates the searchTerm state as you type
+          returnKeyType="search"
+          onSubmitEditing={handleSearch}
         />
 
         <TouchableOpacity
@@ -141,7 +142,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     marginStart: 5,
     marginEnd: 30,
-    gap: 12,
+    gap: 8,
     width: 'auto',
     marginBottom: 12,
   },
@@ -151,8 +152,8 @@ const style = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 2,
     paddingStart: 20,
-    margin: 5,
-    padding: 10,
+    margin: 6,
+    padding: 11,
     borderRadius: 10,
     alignItems: 'center',
     color: '#333333',
