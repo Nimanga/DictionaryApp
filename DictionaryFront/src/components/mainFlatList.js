@@ -1,16 +1,35 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, Button} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+  TouchableOpacity,
+  Modal,
+} from 'react-native';
 import DatabaseOperations from './dataBaseConnection';
 import DirectionBtn from './directionBtn';
+import SQLite from 'react-native-sqlite-storage';
 
 const MainFlatList = () => {
+  const db = SQLite.openDatabase(
+    {
+      name: 'dictionaryData.db',
+    },
+    () => {
+      console.log('Database connected');
+    },
+    error => {
+      console, log('Database Error', error);
+    },
+  );
+
   const [temEnWordLists, setTemEnWordLists] = useState([]);
   const [temSnWordLists, setTemSnWordLists] = useState([]);
   const [changeLists, setChangeLists] = useState([]);
-
-  const handleItemPress = item => {
-    setListWord(item);
-  };
+  const [mainListDefinition, setMainListDefinition] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [itemWord, setItemWord] = useState('');
 
   const handleEnWordsListed = wordList1 => {
     setTemEnWordLists(wordList1);
@@ -27,158 +46,161 @@ const MainFlatList = () => {
   const changeSnData = () => {
     setChangeLists(temSnWordLists);
   };
-  // console.log(temEnWordLists);
-  // console.log(temSnWordLists);
+
+  const handleSearch = item => {
+    setItemWord(item);
+    const isSinhala = !/^[a-zA-Z0-9\s]*$/.test(item);
+
+    console.log('handleEnSearch');
+
+    db.transaction(tx => {
+      const sqlQuery = !isSinhala
+        ? 'SELECT definition FROM enWords WHERE word = ?'
+        : 'SELECT definition FROM snWords WHERE word = ?';
+
+      tx.executeSql(
+        sqlQuery,
+        [item.toLowerCase()],
+        (tx, results) => {
+          console.log(results.rows.length);
+          if (results.rows.length > 0) {
+            const definitions = results.rows.item(0).definition;
+            console.log('If', definitions);
+            setMainListDefinition(JSON.parse(definitions));
+          } else {
+            console.log('No definitions found for', searchTerm);
+          }
+        },
+        error => {
+          console.log('Error searching:', error);
+        },
+      );
+    });
+    setMainListDefinition([]);
+    setShowModal(true);
+  };
+
+  console.log(mainListDefinition);
 
   return (
-    <View style={{flex: 1, gap: 12}}>
-      <DatabaseOperations
-        onSnWordsListed={handleSnWordsListed}
-        onEnWordsListed={handleEnWordsListed}
-      />
+    <>
+      <View style={{flex: 1, gap: 12}}>
+        <DatabaseOperations
+          onSnWordsListed={handleSnWordsListed}
+          onEnWordsListed={handleEnWordsListed}
+        />
 
-      <DirectionBtn changeEnData={changeEnData} changeSnData={changeSnData} />
+        <DirectionBtn changeEnData={changeEnData} changeSnData={changeSnData} />
+
+        <View>
+          <FlatList
+            data={changeLists}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <View
+                style={{
+                  padding: 8,
+                  margin: 4,
+                  backgroundColor: '#E0EAFB',
+                  borderRadius: 10,
+                  marginStart: 12,
+                  marginEnd: 12,
+                  paddingStart: 15,
+                }}>
+                <TouchableOpacity onPress={() => handleSearch(item)}>
+                  <Text
+                    style={{
+                      color: '#000000',
+                      marginStart: 5,
+                      fontWeight: 600,
+                      fontSize: 16,
+                      fontFamily: 'Roboto-Black',
+                    }}>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+      </View>
 
       <View>
-        <FlatList
-          data={changeLists}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
+        <Modal
+          animationType={'slide'}
+          transparent={true}
+          visible={showModal}
+          onRequestClose={() => setShowModal(false)}>
+          <TouchableOpacity
+            onPress={() => setShowModal(false)}
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            }}>
             <View
               style={{
-                padding: 8,
-                margin: 4,
-                backgroundColor: '#E0EAFB',
-                borderRadius: 10,
-                marginStart: 12,
-                marginEnd: 12,
-                paddingStart: 15,
+                backgroundColor: '#324B77',
+
+                borderRadius: 20,
+                padding: 16,
+                marginBottom: 100,
               }}>
               <Text
                 style={{
-                  color: '#000000',
-                  marginStart: 5,
-                  fontWeight: 600,
-                  fontSize: 16,
+                  backgroundColor: '#22886E',
                   fontFamily: 'Roboto-Black',
+                  color: '#ffffff',
+                  margin: 12,
+                  marginBottom: 20,
+                  paddingStart: 20,
+                  padding: 10,
+                  borderRadius: 10,
+                  fontSize: 17,
+                  fontWeight: '600',
                 }}>
-                {item}
+                {itemWord}
               </Text>
+              <FlatList
+                data={mainListDefinition}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item}) => (
+                  <Text
+                    style={{
+                      padding: 8,
+                      margin: 5,
+                      backgroundColor: '#E0EAFB',
+                      borderRadius: 10,
+                      color: '#000000',
+                      fontSize: 16,
+                      fontWeight: '600',
+                      paddingStart: 15,
+                      fontFamily: 'Roboto-Black',
+                    }}>
+                    {item}
+                  </Text>
+                )}
+                ListEmptyComponent={
+                  <Text
+                    style={{
+                      padding: 8,
+                      margin: 10,
+                      backgroundColor: '#e08566',
+                      borderRadius: 10,
+                      color: '#ffffff',
+                      fontFamily: 'Roboto-Black',
+                      fontWeight: '500',
+                    }}>
+                    No definitions. Search a Word.
+                  </Text>
+                }
+              />
             </View>
-          )}
-        />
+          </TouchableOpacity>
+        </Modal>
       </View>
-    </View>
+    </>
   );
 };
 
 export default MainFlatList;
-
-{
-  /* <Button title="English" onPress={changeEnData}/>
-<Button title="Sinhala" onPress={changeSnData}/> */
-}
-// import React, { useEffect, useState } from 'react';
-// import { View, Text, FlatList } from 'react-native';
-// import SQLite from 'react-native-sqlite-storage';
-
-// const MainFlatList = () => {
-//   const [temWordLists, setTemWordLists] = useState([]);
-
-//   const db = SQLite.openDatabase(
-//     {
-//       name: 'dictionaryData.db',
-//       location: 'default'
-//     },
-//     () => {
-//       console.log('Database Connected');
-//       dropTable();
-//     },
-//     (error) => {
-//       console.log('Database Error', error);
-//     }
-//   );
-
-//   const insertDataFromJSON = () => {
-//     console.log('Data insert');
-//     try {
-//       const jsonData = require('../../en2sn.json');
-
-//       db.transaction(async (tx) => {
-//         await tx.executeSql(
-//           'CREATE TABLE IF NOT EXISTS enWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
-//           []
-//         );
-//         for (const item of jsonData) {
-//           await tx.executeSql('INSERT INTO enWords (word, definition) VALUES (?, ?)', [
-//             item.word,
-//             JSON.stringify(item.definitions)
-//           ]);
-//         }
-//       });
-
-//       console.log('Data inserted successfully');
-//       listWords();
-//     } catch (error) {
-//       console.log('Error inserting data:', error);
-//     }
-//   };
-
-//   const dropTable = async () => {
-//     console.log('DropTable');
-//     try {
-//       await db.transaction(async (tx) => {
-//         tx.executeSql('DROP TABLE IF EXISTS enWords');
-//       });
-
-//       console.log('Table dropped successfully');
-//       insertDataFromJSON();
-//     } catch (error) {
-//       console.error('Error dropping table:', error);
-//     }
-//   };
-
-//   const listWords = async () => {
-//     console.log('ListWords');
-//     try {
-//       let sql = 'SELECT word FROM enWords';
-//       db.transaction((tx) => {
-//         tx.executeSql(
-//           sql,
-//           [],
-//           (tx, resultSet) => {
-//             let tempWordLists = [];
-
-//             for (let i = 0; i < 150; i++) {
-//               const words = resultSet.rows.item(i).word;
-//               tempWordLists.push(words);
-//             }
-//             setTemWordLists(tempWordLists);
-//           },
-//           (error) => {
-//             console.log('List Word error', error);
-//           }
-//         );
-//       });
-//     } catch (error) {
-//       console.log('Error getting data', error);
-//     }
-//   };
-
-//   return (
-//     <View>
-//       <Text>Words:</Text>
-//       <FlatList
-//         data={temWordLists}
-//         keyExtractor={(item, index) => index.toString()}
-//         renderItem={({ item }) => (
-//           <View>
-//             <Text>{item}</Text>
-//           </View>
-//         )}
-//       />
-//     </View>
-//   );
-// };
-
-// export default MainFlatList;

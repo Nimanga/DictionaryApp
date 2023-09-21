@@ -6,7 +6,6 @@ import SQLite from 'react-native-sqlite-storage';
 const SearchComponent = ({onPressSearch, onPressClear}) => {
   const [inputValue, setInputValue] = useState('');
   const [definition, setDefinition] = useState([]);
-  // const [historyWord, setHistoryWord] = useState('');
   const [noDefinition, setNoDefintion] = useState(false);
 
   const db = SQLite.openDatabase(
@@ -84,6 +83,8 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
             padding: 10,
             borderRadius: 6,
             height: 40,
+            fontFamily: 'Roboto-Black',
+            fontWeight: '500',
           }}>
           <Text style={{color: '#ffffff'}}>SEARCH</Text>
         </TouchableOpacity>
