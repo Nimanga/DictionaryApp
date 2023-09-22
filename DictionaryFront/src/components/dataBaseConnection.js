@@ -128,7 +128,7 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
             (tx, resultSet) => {
               let tempSnWordLists = [];
 
-              for (let i = 0; i < 500; i++) {
+              for (let i = 0; i < 2000; i++) {
                 const words = resultSet.rows.item(i).word;
                 tempSnWordLists.push(words);
               }
@@ -156,7 +156,7 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
             (tx, resultSet) => {
               let tempEnWordLists = [];
 
-              for (let i = 22; i < 500; i++) {
+              for (let i = 22; i < 2000; i++) {
                 const words = resultSet.rows.item(i).word;
                 tempEnWordLists.push(words);
               }

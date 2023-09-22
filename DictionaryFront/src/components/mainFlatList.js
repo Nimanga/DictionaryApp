@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import DatabaseOperations from './dataBaseConnection';
 import DirectionBtn from './directionBtn';
@@ -30,6 +31,7 @@ const MainFlatList = () => {
   const [mainListDefinition, setMainListDefinition] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [itemWord, setItemWord] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleEnWordsListed = wordList1 => {
     setTemEnWordLists(wordList1);
@@ -49,6 +51,7 @@ const MainFlatList = () => {
 
   const handleSearch = item => {
     setItemWord(item);
+    setLoading(true);
     const isSinhala = !/^[a-zA-Z0-9\s]*$/.test(item);
 
     console.log('handleEnSearch');
@@ -62,6 +65,7 @@ const MainFlatList = () => {
         sqlQuery,
         [item.toLowerCase()],
         (tx, results) => {
+          setLoading(false);
           console.log(results.rows.length);
           if (results.rows.length > 0) {
             const definitions = results.rows.item(0).definition;
@@ -78,6 +82,7 @@ const MainFlatList = () => {
     });
     setMainListDefinition([]);
     setShowModal(true);
+    setLoading(true);
   };
 
   console.log(mainListDefinition);
@@ -123,33 +128,50 @@ const MainFlatList = () => {
             )}
           />
         </View>
-
-        <Modal
-          animationType={'slide'}
-          transparent={true}
-          visible={showModal}
-          onRequestClose={() => setShowModal(false)}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalHeaderText}>{itemWord}</Text>
-            <FlatList
-              data={mainListDefinition}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
-                <Text style={styles.modalDefinitionText}>{item}</Text>
-              )}
-              ListEmptyComponent={
-                <Text style={styles.modalNoDefinitionText}>
-                  No definitions. Search a Word.
-                </Text>
-              }
-            />
-            <TouchableOpacity
-              onPress={() => setShowModal(false)}
-              style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+        <View>
+          <Modal
+            animationType={'fade'}
+            transparent={true}
+            visible={showModal}
+            onRequestClose={() => setShowModal(false)}>
+            <View
+              style={{
+                backgroundColor: '#000000aa',
+                flex: 1,
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalHeaderText}>{itemWord}</Text>
+                {!loading ? (
+                  <FlatList
+                    data={mainListDefinition}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item}) => (
+                      <Text style={styles.modalDefinitionText}>{item}</Text>
+                    )}
+                    ListEmptyComponent={
+                      <Text style={styles.modalNoDefinitionText}>
+                        No definitions. Search a Word.
+                      </Text>
+                    }
+                  />
+                ) : (
+                  <>
+                    <View style={{marginTop: '30%', marginBottom: '59%'}}>
+                      <ActivityIndicator size="large" color="#65a765" />
+                    </View>
+                  </>
+                )}
+                <TouchableOpacity
+                  onPress={() => setShowModal(false)}
+                  style={styles.closeButton}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </View>
       </View>
     </>
   );
@@ -165,6 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     width: '80%',
+    height: '60%',
     alignSelf: 'center',
     marginTop: 'auto',
     marginBottom: 'auto',
