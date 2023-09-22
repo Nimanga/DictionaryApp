@@ -3,9 +3,9 @@ import {
   View,
   Text,
   FlatList,
-  Button,
   TouchableOpacity,
   Modal,
+  StyleSheet,
 } from 'react-native';
 import DatabaseOperations from './dataBaseConnection';
 import DirectionBtn from './directionBtn';
@@ -92,7 +92,7 @@ const MainFlatList = () => {
 
         <DirectionBtn changeEnData={changeEnData} changeSnData={changeSnData} />
 
-        <View>
+        <View style={styles.flatListContainer}>
           <FlatList
             data={changeLists}
             keyExtractor={(item, index) => index.toString()}
@@ -123,84 +123,98 @@ const MainFlatList = () => {
             )}
           />
         </View>
-      </View>
 
-      <View>
         <Modal
           animationType={'slide'}
           transparent={true}
           visible={showModal}
           onRequestClose={() => setShowModal(false)}>
-          <TouchableOpacity
-            onPress={() => setShowModal(false)}
-            style={{
-              flex: 1,
-              justifyContent: 'flex-end',
-              backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            }}>
-            <View
-              style={{
-                backgroundColor: '#324B77',
-
-                borderRadius: 20,
-                padding: 16,
-                marginBottom: 100,
-              }}>
-              <Text
-                style={{
-                  backgroundColor: '#22886E',
-                  fontFamily: 'Roboto-Black',
-                  color: '#ffffff',
-                  margin: 12,
-                  marginBottom: 20,
-                  paddingStart: 20,
-                  padding: 10,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  fontWeight: '600',
-                }}>
-                {itemWord}
-              </Text>
-              <FlatList
-                data={mainListDefinition}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) => (
-                  <Text
-                    style={{
-                      padding: 8,
-                      margin: 5,
-                      backgroundColor: '#E0EAFB',
-                      borderRadius: 10,
-                      color: '#000000',
-                      fontSize: 16,
-                      fontWeight: '600',
-                      paddingStart: 15,
-                      fontFamily: 'Roboto-Black',
-                    }}>
-                    {item}
-                  </Text>
-                )}
-                ListEmptyComponent={
-                  <Text
-                    style={{
-                      padding: 8,
-                      margin: 10,
-                      backgroundColor: '#e08566',
-                      borderRadius: 10,
-                      color: '#ffffff',
-                      fontFamily: 'Roboto-Black',
-                      fontWeight: '500',
-                    }}>
-                    No definitions. Search a Word.
-                  </Text>
-                }
-              />
-            </View>
-          </TouchableOpacity>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalHeaderText}>{itemWord}</Text>
+            <FlatList
+              data={mainListDefinition}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <Text style={styles.modalDefinitionText}>{item}</Text>
+              )}
+              ListEmptyComponent={
+                <Text style={styles.modalNoDefinitionText}>
+                  No definitions. Search a Word.
+                </Text>
+              }
+            />
+            <TouchableOpacity
+              onPress={() => setShowModal(false)}
+              style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </Modal>
       </View>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  flatListContainer: {
+    flex: 1,
+    width: '100%',
+  },
+  modalContainer: {
+    backgroundColor: '#324B77',
+    borderRadius: 20,
+    padding: 16,
+    width: '80%',
+    alignSelf: 'center',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  modalHeaderText: {
+    backgroundColor: '#22886E',
+    fontFamily: 'Roboto-Black',
+    color: '#ffffff',
+    margin: 12,
+    marginBottom: 20,
+    paddingStart: 20,
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  modalDefinitionText: {
+    padding: 8,
+    margin: 5,
+    backgroundColor: '#E0EAFB',
+    borderRadius: 10,
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '600',
+    paddingStart: 15,
+    fontFamily: 'Roboto-Black',
+  },
+  modalNoDefinitionText: {
+    padding: 8,
+    margin: 10,
+    backgroundColor: '#e08566',
+    borderRadius: 10,
+    color: '#ffffff',
+    fontFamily: 'Roboto-Black',
+    fontWeight: '500',
+  },
+  closeButton: {
+    backgroundColor: '#e08566',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  closeButtonText: {
+    color: '#ffffff',
+    fontFamily: 'Roboto-Black',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+});
 
 export default MainFlatList;
