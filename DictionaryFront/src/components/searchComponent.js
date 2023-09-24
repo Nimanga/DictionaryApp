@@ -75,19 +75,31 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
           returnKeyType="search"
           onSubmitEditing={handleSearch}
         />
-
-        <TouchableOpacity
-          onPress={handleSearch}
+        <View
           style={{
-            backgroundColor: '#3C598E',
-            padding: 10,
-            borderRadius: 6,
-            height: 40,
-            fontFamily: 'Roboto-Black',
-            fontWeight: '500',
+            width: '20%',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          <Text style={{color: '#ffffff'}}>SEARCH</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleSearch}
+            style={{
+              backgroundColor: '#3C598E',
+              padding: 10,
+              borderRadius: 6,
+              height: 40,
+            }}>
+            <Text
+              style={{
+                color: '#ffffff',
+                fontFamily: 'Roboto-Black',
+                fontWeight: '600',
+                fontSize: 15,
+              }}>
+              Search
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View>
@@ -107,7 +119,7 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
                   paddingStart: 15,
                   color: '#000000',
                   fontSize: 16,
-                  fontWeight: 600,
+                  fontWeight: '600',
                   fontFamily: 'Roboto-Black',
                 }}>
                 {item}
@@ -141,20 +153,19 @@ const style = StyleSheet.create({
   View: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginStart: 5,
-    marginEnd: 30,
-    gap: 8,
-    width: 'auto',
-    marginBottom: 12,
+    marginStart: '5%',
+    marginEnd: '3%',
+    gap: 20,
+    width: '100%',
+    marginBottom: '6%',
   },
   textInput: {
     height: 40,
-    width: 250,
+    width: '65%',
     borderColor: 'gray',
     borderWidth: 2,
-    paddingStart: 20,
-    margin: 6,
-    padding: 11,
+    paddingStart: '5%',
+    padding: '1%',
     borderRadius: 10,
     alignItems: 'center',
     color: '#333333',
