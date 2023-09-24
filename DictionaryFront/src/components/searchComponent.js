@@ -153,7 +153,7 @@ const style = StyleSheet.create({
   View: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginStart: '5%',
+    marginStart: '5.4%',
     marginEnd: '3%',
     gap: 20,
     width: '100%',
