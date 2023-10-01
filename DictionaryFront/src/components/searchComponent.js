@@ -85,19 +85,24 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
             onPress={handleSearch}
             style={{
               backgroundColor: '#3C598E',
-              padding: 10,
-              borderRadius: 6,
+              padding: '5%',
+              borderRadius: 8,
+              paddingStart: '6%',
               height: 40,
             }}>
-            <Text
-              style={{
-                color: '#ffffff',
-                fontFamily: 'Roboto-Black',
-                fontWeight: '600',
-                fontSize: 15,
-              }}>
-              Search
-            </Text>
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text
+                style={{
+                  padding: '9%',
+                  color: '#ffffff',
+                  fontFamily: 'Roboto-Black',
+                  fontWeight: '600',
+                  fontSize: 14,
+                }}>
+                Search
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>

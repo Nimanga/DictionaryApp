@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet} from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useState} from 'react';
 
@@ -46,24 +46,23 @@ const styles = StyleSheet.create({
   text: {
     // textDecorationLine: 'underline',
     backgroundColor: '#324B77',
-    padding: 1,
-    paddingStart: 15,
-    paddingEnd: 15,
-    margin: 8,
+    padding: '0.5%',
+    paddingStart: '6%',
+    paddingEnd: '-1%',
+    margin: '4%',
     borderRadius: 5,
     color: '#ffffff',
     fontSize: 15,
   },
   btn: {
     flexDirection: 'row',
-    // width: '100%',
     justifyContent: 'center', // Align button content horizontally
     alignItems: 'center', // Align button content vertically
     backgroundColor: '#7b9edd',
-    padding: 3,
+    padding: '1%',
     borderRadius: 8,
-    marginStart: 25,
-    marginEnd: 25,
+    marginStart: '6%',
+    marginEnd: '6.5%',
     gap: 100,
   },
 });

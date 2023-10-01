@@ -22,12 +22,11 @@ const CustomDrawer = props => {
         <View style={{flex: 1, justifyContent: 'center'}}>
           <Text
             style={{
-              padding: 15, // Adjust the padding to your liking
+              padding: 15,
               fontSize: 18,
               color: '#ffffff',
               fontFamily: 'Roboto-Bold',
               fontWeight: '800',
-              // textAlign: 'center',
               flexWrap: 'wrap',
             }}>
             ENGLISH-SINHALA DICTIONARY
