@@ -1,137 +1,243 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import DatabaseOperations from './dataBaseConnection';
+import DirectionBtn from './directionBtn';
+import SQLite from 'react-native-sqlite-storage';
 
 const MainFlatList = () => {
-  const [temWordLists, setTemWordLists] = useState([]);
+  const db = SQLite.openDatabase(
+    {
+      name: 'dictionaryData.db',
+    },
+    () => {
+      console.log('Database connected');
+    },
+    error => {
+      console, log('Database Error', error);
+    },
+  );
 
-  const handleWordsListed = (wordList) => {
-    setTemWordLists(wordList);
+  const [temEnWordLists, setTemEnWordLists] = useState([]);
+  const [temSnWordLists, setTemSnWordLists] = useState([]);
+  const [changeLists, setChangeLists] = useState([]);
+  const [mainListDefinition, setMainListDefinition] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [itemWord, setItemWord] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleEnWordsListed = wordList1 => {
+    setTemEnWordLists(wordList1);
+    setChangeLists(wordList1);
   };
 
+  const handleSnWordsListed = wordList2 => {
+    setTemSnWordLists(wordList2);
+  };
+
+  const changeEnData = () => {
+    setChangeLists(temEnWordLists);
+  };
+  const changeSnData = () => {
+    setChangeLists(temSnWordLists);
+  };
+
+  const handleSearch = item => {
+    setItemWord(item);
+    setLoading(true);
+    const isSinhala = !/^[a-zA-Z0-9\s]*$/.test(item);
+
+    console.log('handleEnSearch');
+
+    db.transaction(tx => {
+      const sqlQuery = !isSinhala
+        ? 'SELECT definition FROM enWords WHERE word = ?'
+        : 'SELECT definition FROM snWords WHERE word = ?';
+
+      tx.executeSql(
+        sqlQuery,
+        [item.toLowerCase()],
+        (tx, results) => {
+          setLoading(false);
+          console.log(results.rows.length);
+          if (results.rows.length > 0) {
+            const definitions = results.rows.item(0).definition;
+            console.log('If', definitions);
+            setMainListDefinition(JSON.parse(definitions));
+          } else {
+            console.log('No definitions found for', searchTerm);
+          }
+        },
+        error => {
+          console.log('Error searching:', error);
+        },
+      );
+    });
+    setMainListDefinition([]);
+    setShowModal(true);
+    setLoading(true);
+  };
+
+  console.log(mainListDefinition);
+
   return (
-    <View>
-      <Text>Words:</Text>
-      <DatabaseOperations onWordsListed={handleWordsListed} />
-      <FlatList
-        data={temWordLists}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <Text>{item}</Text>
-          </View>
-        )}
-      />
-    </View>
+    <>
+      <View style={{flex: 1, gap: 12}}>
+        <DatabaseOperations
+          onSnWordsListed={handleSnWordsListed}
+          onEnWordsListed={handleEnWordsListed}
+        />
+
+        <DirectionBtn changeEnData={changeEnData} changeSnData={changeSnData} />
+
+        <View style={styles.flatListContainer}>
+          <FlatList
+            data={changeLists}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <View
+                style={{
+                  padding: 8,
+                  margin: 4,
+                  backgroundColor: '#E0EAFB',
+                  borderRadius: 10,
+                  marginStart: 12,
+                  marginEnd: 12,
+                  paddingStart: 15,
+                }}>
+                <TouchableOpacity onPress={() => handleSearch(item)}>
+                  <Text
+                    style={{
+                      color: '#000000',
+                      marginStart: 5,
+                      fontWeight: 600,
+                      fontSize: 16,
+                      fontFamily: 'Roboto-Black',
+                    }}>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
+        <View>
+          <Modal
+            animationType={'fade'}
+            transparent={true}
+            visible={showModal}
+            onRequestClose={() => setShowModal(false)}>
+            <View
+              style={{
+                backgroundColor: '#000000aa',
+                flex: 1,
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalHeaderText}>{itemWord}</Text>
+                {!loading ? (
+                  <FlatList
+                    data={mainListDefinition}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item}) => (
+                      <Text style={styles.modalDefinitionText}>{item}</Text>
+                    )}
+                    ListEmptyComponent={
+                      <Text style={styles.modalNoDefinitionText}>
+                        No definitions. Search a Word.
+                      </Text>
+                    }
+                  />
+                ) : (
+                  <>
+                    <View style={{marginTop: '30%', marginBottom: '59%'}}>
+                      <ActivityIndicator size="large" color="#65a765" />
+                    </View>
+                  </>
+                )}
+                <TouchableOpacity
+                  onPress={() => setShowModal(false)}
+                  style={styles.closeButton}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </View>
+      </View>
+    </>
   );
 };
 
+const styles = StyleSheet.create({
+  flatListContainer: {
+    flex: 1,
+    width: '100%',
+  },
+  modalContainer: {
+    backgroundColor: '#324B77',
+    borderRadius: 20,
+    padding: 16,
+    width: '80%',
+    height: '60%',
+    alignSelf: 'center',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  modalHeaderText: {
+    backgroundColor: '#22886E',
+    fontFamily: 'Roboto-Black',
+    color: '#ffffff',
+    margin: 12,
+    marginBottom: 20,
+    paddingStart: 20,
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  modalDefinitionText: {
+    padding: 8,
+    margin: 5,
+    backgroundColor: '#E0EAFB',
+    borderRadius: 10,
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '600',
+    paddingStart: 15,
+    fontFamily: 'Roboto-Black',
+  },
+  modalNoDefinitionText: {
+    padding: 8,
+    margin: 10,
+    backgroundColor: '#e08566',
+    borderRadius: 10,
+    color: '#ffffff',
+    fontFamily: 'Roboto-Black',
+    fontWeight: '500',
+  },
+  closeButton: {
+    backgroundColor: '#e08566',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  closeButtonText: {
+    color: '#ffffff',
+    fontFamily: 'Roboto-Black',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+});
+
 export default MainFlatList;
-
-
-
-
-// import React, { useEffect, useState } from 'react';
-// import { View, Text, FlatList } from 'react-native';
-// import SQLite from 'react-native-sqlite-storage';
-
-// const MainFlatList = () => {
-//   const [temWordLists, setTemWordLists] = useState([]);
-
-//   const db = SQLite.openDatabase(
-//     {
-//       name: 'dictionaryData.db',
-//       location: 'default'
-//     },
-//     () => {
-//       console.log('Database Connected');
-//       dropTable();
-//     },
-//     (error) => {
-//       console.log('Database Error', error);
-//     }
-//   );
-
-//   const insertDataFromJSON = () => {
-//     console.log('Data insert');
-//     try {
-//       const jsonData = require('../../en2sn.json');
-
-//       db.transaction(async (tx) => {
-//         await tx.executeSql(
-//           'CREATE TABLE IF NOT EXISTS enWords (id INTEGER PRIMARY KEY AUTOINCREMENT, word TEXT, definition TEXT)',
-//           []
-//         );
-//         for (const item of jsonData) {
-//           await tx.executeSql('INSERT INTO enWords (word, definition) VALUES (?, ?)', [
-//             item.word,
-//             JSON.stringify(item.definitions)
-//           ]);
-//         }
-//       });
-
-//       console.log('Data inserted successfully');
-//       listWords();
-//     } catch (error) {
-//       console.log('Error inserting data:', error);
-//     }
-//   };
-
-//   const dropTable = async () => {
-//     console.log('DropTable');
-//     try {
-//       await db.transaction(async (tx) => {
-//         tx.executeSql('DROP TABLE IF EXISTS enWords');
-//       });
-
-//       console.log('Table dropped successfully');
-//       insertDataFromJSON();
-//     } catch (error) {
-//       console.error('Error dropping table:', error);
-//     }
-//   };
-
-//   const listWords = async () => {
-//     console.log('ListWords');
-//     try {
-//       let sql = 'SELECT word FROM enWords';
-//       db.transaction((tx) => {
-//         tx.executeSql(
-//           sql,
-//           [],
-//           (tx, resultSet) => {
-//             let tempWordLists = [];
-
-//             for (let i = 0; i < 150; i++) {
-//               const words = resultSet.rows.item(i).word;
-//               tempWordLists.push(words);
-//             }
-//             setTemWordLists(tempWordLists);
-//           },
-//           (error) => {
-//             console.log('List Word error', error);
-//           }
-//         );
-//       });
-//     } catch (error) {
-//       console.log('Error getting data', error);
-//     }
-//   };
-
-//   return (
-//     <View>
-//       <Text>Words:</Text>
-//       <FlatList
-//         data={temWordLists}
-//         keyExtractor={(item, index) => index.toString()}
-//         renderItem={({ item }) => (
-//           <View>
-//             <Text>{item}</Text>
-//           </View>
-//         )}
-//       />
-//     </View>
-//   );
-// };
-
-// export default MainFlatList;
