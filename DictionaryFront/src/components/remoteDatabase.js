@@ -49,7 +49,9 @@ const RemoteDatabase = () => {
 
     const getRemoteVersion = async () => {
       await axios
-        .get('http://10.0.2.2:8050/dictionary/version')
+        .get(
+          'https://dictionary-application-z3ox.onrender.com/dictionary/version',
+        )
         .then(res => {
           // setRemoteVersion(res.data[0].version);
           getRemoteVersions = res.data[0].version;
@@ -81,7 +83,9 @@ const RemoteDatabase = () => {
 
   const getEnData = async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:8050/dictionary/en2sn');
+      const response = await axios.get(
+        'https://dictionary-application-z3ox.onrender.com/dictionary/en2sn',
+      );
       console.log('enData', response.data);
 
       let englishData = response.data;
@@ -93,7 +97,9 @@ const RemoteDatabase = () => {
 
   const getSnData = async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:8050/dictionary/sn2en');
+      const response = await axios.get(
+        'https://dictionary-application-z3ox.onrender.com/dictionary/sn2en',
+      );
       console.log('SnData', response.data);
       let sinhalaData = response.data;
       await insertSnDataToDB(sinhalaData);
