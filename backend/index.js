@@ -4,6 +4,9 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const dictionaryRoutes = require("./routes/dictionaryRoutes.js");
+// const En2Sn = require("./models/en2snModels.js");
+// const Sn2En = require("./models/sn2enModels.js");
+// const fs = require("fs");
 
 const app = express();
 
@@ -31,3 +34,23 @@ mongoose
   .catch((error) => {
     console.log(`Error connecting to mongoDB ${error.message}`);
   });
+
+// insert all JSON data to mongodb
+// const data = fs.readFileSync(
+//   "../DictionaryFront/android/app/src/main/assets/sn2en.json"
+// );
+
+// const jsonData = JSON.parse(data);
+
+// async function insertData() {
+//   try {
+//     await Sn2En.insertMany(jsonData);
+//     console.log("Data inserted successfully!");
+//   } catch (error) {
+//     console.error(error);
+//   } finally {
+//     mongoose.connection.close();
+//   }
+// }
+
+// insertData();

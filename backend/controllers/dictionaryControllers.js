@@ -81,6 +81,21 @@ const dictionarySinahala = async (req, res) => {
   }
 };
 
+const updateVersions = async (req, res) => {
+  try {
+    let userId = req.params.id;
+    const { version } = req.body;
+
+    const updateVersion = {
+      version,
+    };
+    const update = await Version.findByIdAndUpdate(userId, updateVersion);
+    res.status(200).json({ message: "Version Updated" });
+  } catch (error) {
+    console.log("Error updating Data", error);
+    res.status(404).json({ message: error.message });
+  }
+};
 module.exports = {
   dictionaryEnglish,
   dictionarySinahala,
@@ -88,4 +103,5 @@ module.exports = {
   addSinhala,
   addVersion,
   getVersion,
+  updateVersions,
 };
