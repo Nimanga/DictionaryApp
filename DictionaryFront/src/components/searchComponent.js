@@ -44,7 +44,7 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
 
       tx.executeSql(
         sqlQuery,
-        [inputValue.toLowerCase()],
+        [inputValue.toLowerCase().trim()],
         (tx, results) => {
           if (results.rows.length > 0) {
             const definitions = results.rows.item(0).definition;

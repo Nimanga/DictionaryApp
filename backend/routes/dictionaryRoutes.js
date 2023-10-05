@@ -8,5 +8,6 @@ router.get("/version", dictionaryControllers.getVersion);
 router.post("/versionAdd", dictionaryControllers.addVersion);
 router.post("/enAdd", dictionaryControllers.addEnglish);
 router.post("/snAdd", dictionaryControllers.addSinhala);
+router.put("/versionUpdate/:id", dictionaryControllers.updateVersions);
 
 module.exports = router;
