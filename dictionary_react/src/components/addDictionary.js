@@ -1,8 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./addDictionary.css";
 
 const AddDictionary = () => {
+  const [currentVersion, setCurrentVersion] = useState("");
+  const [addCurrentVersion, setAddCurrentVersion] = useState("");
+
+  const getCurentVersion = async () => {
+    try {
+      const response = await axios.get(
+        "https://dictionary-application-z3ox.onrender.com/dictionary/version"
+      );
+      setCurrentVersion(response.data[0].version);
+      setAddCurrentVersion("");
+    } catch (error) {
+      console.error("Error fetching version:", error);
+    }
+  };
+  const updateVersion = (e) => {
+    e.preventDefault();
+
+    const updateVersions = {
+      version: Number(addCurrentVersion),
+    };
+
+    axios
+      .put(
+        `https://dictionary-application-z3ox.onrender.com/dictionary/versionUpdate/6514041d34f2e415676cd8e6`,
+        updateVersions
+      )
+      .then((response) => {
+        console.log("Version Update successfully", response.data);
+        getCurentVersion();
+      })
+      .catch((error) => {
+        console.log("Error updating data", error);
+      });
+  };
+
+  // console.log(curentVersion);
+  console.log(currentVersion);
+
+  useEffect(() => {
+    getCurentVersion();
+  }, []);
+
   const [enWord, setEnWord] = useState("");
   const [enDefinition, setEnDefinition] = useState("");
   const [snWord, setSnWord] = useState("");
@@ -19,7 +61,10 @@ const AddDictionary = () => {
     };
 
     axios
-      .post("http://localhost:8050/dictionary/enAdd", newEnData)
+      .post(
+        "https://dictionary-application-z3ox.onrender.com/dictionary/enAdd",
+        newEnData
+      )
       .then(() => {
         alert("EnWord Added");
       })
@@ -42,7 +87,10 @@ const AddDictionary = () => {
     };
 
     axios
-      .post("http://localhost:8050/dictionary/snAdd", newSnData)
+      .post(
+        "https://dictionary-application-z3ox.onrender.com/dictionary/snAdd",
+        newSnData
+      )
       .then(() => {
         alert("SnWord Added");
       })
@@ -87,7 +135,9 @@ const AddDictionary = () => {
                 }}
               />
             </div>
-            <button type="submit">Submit</button>
+            <div className="btn">
+              <button type="submit">Submit</button>
+            </div>
           </div>
         </form>
 
@@ -120,7 +170,38 @@ const AddDictionary = () => {
                 }}
               />
             </div>
-            <button type="submit">Submit</button>
+            <div className="btn">
+              <button type="submit">Submit</button>
+            </div>
+          </div>
+        </form>
+
+        <form onSubmit={updateVersion}>
+          <div className="sub_head">
+            <text style={{ color: "#000000" }}>Version Update</text>
+          </div>
+          <div className="main_form">
+            <h4>Current Version: {currentVersion}</h4>
+            <div>
+              <label>Version Number : </label>
+              <input
+                type="text"
+                id="version"
+                placeholder="Enter the Version number"
+                value={addCurrentVersion} // Use currentVersion to update version
+                onChange={(e) => {
+                  if (e.target.value > currentVersion) {
+                    setAddCurrentVersion(e.target.value);
+                  } else {
+                    setAddCurrentVersion("");
+                    alert("Please update new version");
+                  }
+                }}
+              />
+            </div>
+            <div className="btn">
+              <button type="submit">Submit</button>
+            </div>
           </div>
         </form>
       </div>
