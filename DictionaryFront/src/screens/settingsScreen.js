@@ -1,12 +1,21 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import React from 'react';
 
 const SettingsScreen = () => {
   return (
     <View>
-      <Text>SettingsScreen</Text>
+      <TouchableOpacity>
+        <Text style={style.main_Header}>Database Settings</Text>
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
-export default SettingsScreen
+const style = StyleSheet.create({
+  main_Header: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+});
+
+export default SettingsScreen;
