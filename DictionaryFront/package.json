@@ -1,10 +1,10 @@
 {
-  "name": "DictionaryFront",
+  "name": "english-sinhaladictionary",
   "version": "0.0.1",
   "private": true,
   "rnpm": {
     "assets": [
-      ".DictionaryFrontsrcassets\fonts"
+      ".english-sinhaladictionarysrcassets\fonts"
     ]
   },
   "scripts": {
