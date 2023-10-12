@@ -85,6 +85,13 @@ const MainFlatList = () => {
     setLoading(true);
   };
 
+  const renderLoader = () => {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#65a765" />
+      </View>
+    );
+  };
   console.log(mainListDefinition);
 
   return (
@@ -159,7 +166,7 @@ const MainFlatList = () => {
                 ) : (
                   <>
                     <View style={{marginTop: '30%', marginBottom: '59%'}}>
-                      <ActivityIndicator size="large" color="#65a765" />
+                      <ActivityIndicator size="small" color="#65a765" />
                     </View>
                   </>
                 )}

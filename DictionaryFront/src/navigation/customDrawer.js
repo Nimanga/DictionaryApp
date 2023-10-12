@@ -4,7 +4,7 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import logo from '../assets/images/logo3.png';
+import logo from '../assets/images/logo5.png';
 
 const CustomDrawer = props => {
   return (
@@ -12,12 +12,12 @@ const CustomDrawer = props => {
       <View
         style={{
           flexDirection: 'row',
-          backgroundColor: '#3C598E',
+          backgroundColor: '#081348',
           height: 120,
         }}>
         <Image
           source={logo}
-          style={{width: 75, height: 75, marginStart: 15, marginTop: 20}}
+          style={{width: 76, height: 76, marginStart: 15, marginTop: 20}}
         />
         <View style={{flex: 1, justifyContent: 'center'}}>
           <Text

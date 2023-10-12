@@ -12,7 +12,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "android-release-apk": "cd android && gradlew clean && gradlew assembleRelease"
   },
   "dependencies": {
     "@react-navigation/drawer": "^6.6.3",

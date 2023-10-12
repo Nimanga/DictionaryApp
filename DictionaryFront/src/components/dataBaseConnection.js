@@ -1,5 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Text, View, ActivityIndicator, Modal} from 'react-native';
+import {
+  Alert,
+  Text,
+  View,
+  ActivityIndicator,
+  Modal,
+  ImageBackground,
+  Image,
+  StatusBar,
+} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 import RemoteDatabase from './remoteDatabase';
 
@@ -134,6 +143,7 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
 
               // Pass the word list back to the parent component
               onSnWordsListed(tempSnWordLists);
+              setLoading(false);
             },
             error => {
               console.log('List Word error', error);
@@ -164,7 +174,6 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
 
               // Pass the word list back to the parent component
               onEnWordsListed(tempEnWordLists);
-              setLoading(false);
             },
             error => {
               console.log('List Word error', error);
@@ -187,15 +196,28 @@ const DatabaseConnection = ({onEnWordsListed, onSnWordsListed}) => {
       {loading ? (
         <>
           <RemoteDatabase />
-          <Modal animationType="fade" transparent={false} visible={loading}>
-            <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <ActivityIndicator size="large" />
-              <View style={{marginTop: 10}}>
-                <Text style={{color: '#000000'}}>Loading Data</Text>
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Modal animationType="fade" transparent={false} visible={loading}>
+              <StatusBar backgroundColor="#081348" />
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#081348',
+                }}>
+                <Image
+                  style={{
+                    width: '50%',
+                    height: '50%',
+                    resizeMode: 'contain',
+                  }}
+                  source={require('../assets/images/logo5.png')}
+                />
               </View>
-            </View>
-          </Modal>
+            </Modal>
+          </View>
         </>
       ) : (
         <></>

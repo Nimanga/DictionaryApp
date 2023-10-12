@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     paddingEnd: '6%',
     // paddingBottom: '2%',
     // paddingTop: '2%',
-    // margin: '4%',
+    margin: '2%',
 
     borderRadius: 5,
     color: '#ffffff',
