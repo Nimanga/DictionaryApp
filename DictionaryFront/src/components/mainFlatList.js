@@ -33,6 +33,37 @@ const MainFlatList = () => {
   const [itemWord, setItemWord] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [visibleData, setVisibleData] = useState([]);
+  const [startIdx, setStartIdx] = useState(0);
+  const [endIdx, setEndIdx] = useState(15);
+
+  // const fetchData = () => {
+  //   console.log('FetchData');
+  //   const newData = Array.from({length: 2000}, (_, index) => `Loadings..`);
+  //   setChangeLists(newData);
+  // };
+
+  const updateVisibleData = () => {
+    console.log('updateVisibleData');
+
+    setVisibleData(changeLists.slice(startIdx, endIdx));
+  };
+
+  console.log(visibleData);
+
+  const handleEndReached = () => {
+    setStartIdx(prevStartIdx => prevStartIdx + 1);
+    setEndIdx(prevEndIdx => prevEndIdx + 50);
+    updateVisibleData();
+  };
+
+  console.log('index', startIdx);
+
+  useEffect(() => {
+    // fetchData();
+    handleEndReached();
+  }, []);
+
   const handleEnWordsListed = wordList1 => {
     setTemEnWordLists(wordList1);
     setChangeLists(wordList1);
@@ -133,6 +164,8 @@ const MainFlatList = () => {
                 </TouchableOpacity>
               </View>
             )}
+            onEndReached={handleEndReached}
+            onEndReachedThreshold={0.1}
           />
         </View>
         <View>
