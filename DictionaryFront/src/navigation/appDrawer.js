@@ -18,10 +18,10 @@ const Drawer = createDrawerNavigator();
 function AppDrawer() {
   return (
     <>
-      <StatusBar backgroundColor="#5A86D5" />
+      <StatusBar backgroundColor="#3C598E" />
       <Drawer.Navigator
         screenOptions={{
-          headerStyle: {backgroundColor: '#5A86D5'},
+          headerStyle: {backgroundColor: '#3C598E'},
           headerTitleStyle: {color: '#ffffff', flex: 1},
           headerStatusBarHeight: 30,
           headerLeftContainerStyle: {marginBottom: 25},
