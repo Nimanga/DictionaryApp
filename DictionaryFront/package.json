@@ -1,10 +1,10 @@
 {
-  "name": "DictionaryFront",
+  "name": "english-sinhaladictionary",
   "version": "0.0.1",
   "private": true,
   "rnpm": {
     "assets": [
-      ".DictionaryFrontsrcassets\fonts"
+      ".english-sinhaladictionarysrcassets\fonts"
     ]
   },
   "scripts": {
@@ -12,7 +12,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "android-release-apk": "cd android && gradlew clean && gradlew assembleRelease"
   },
   "dependencies": {
     "@react-navigation/drawer": "^6.6.3",
@@ -23,6 +24,7 @@
     "react-native": "0.72.4",
     "react-native-gesture-handler": "^2.12.1",
     "react-native-reanimated": "^3.4.2",
+    "react-native-rename": "^3.2.13",
     "react-native-safe-area-context": "^4.7.2",
     "react-native-screens": "^3.25.0",
     "react-native-sqlite-storage": "^6.0.1",

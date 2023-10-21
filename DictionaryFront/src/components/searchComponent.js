@@ -7,6 +7,7 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
   const [inputValue, setInputValue] = useState('');
   const [definition, setDefinition] = useState([]);
   const [noDefinition, setNoDefintion] = useState(false);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   const db = SQLite.openDatabase(
     {
@@ -33,6 +34,7 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
 
   const handleSearch = () => {
     setNoDefintion(true);
+
     const isSinhala = !/^[a-zA-Z0-9\s]*$/.test(inputValue);
 
     console.log('handleEnSearch');
@@ -61,6 +63,7 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
     });
     // setHistoryWord([inputValue]);
     onPressSearch();
+    setSearchPerformed(true);
   };
 
   return (
@@ -85,16 +88,19 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
             onPress={handleSearch}
             style={{
               backgroundColor: '#3C598E',
-              padding: '5%',
+              // padding: '1%',
               borderRadius: 8,
               paddingStart: '6%',
+              paddingEnd: '6%',
               height: 40,
             }}>
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Text
                 style={{
-                  padding: '9%',
+                  padding: '10%',
+                  paddingBottom: '3%',
+                  paddingTop: '3%',
                   color: '#ffffff',
                   fontFamily: 'Roboto-Black',
                   fontWeight: '600',
@@ -131,21 +137,23 @@ const SearchComponent = ({onPressSearch, onPressClear}) => {
               </Text>
             )}
             ListEmptyComponent={
-              <Text
-                style={{
-                  padding: 8,
-                  margin: 10,
-                  backgroundColor: '#e08566',
-                  borderRadius: 10,
-                  marginStart: 12,
-                  marginEnd: 12,
-                  paddingStart: 75,
-                  color: '#ffffff',
-                  fontFamily: 'Roboto-Black',
-                  fontWeight: '500',
-                }}>
-                No definitions Search a Word
-              </Text>
+              searchPerformed && (
+                <Text
+                  style={{
+                    padding: 8,
+                    margin: 10,
+                    backgroundColor: '#e08566',
+                    borderRadius: 10,
+                    marginStart: 12,
+                    marginEnd: 12,
+                    paddingStart: 75,
+                    color: '#ffffff',
+                    fontFamily: 'Roboto-Black',
+                    fontWeight: '500',
+                  }}>
+                  No definitions Search a Word
+                </Text>
+              )
             }
           />
         </View>

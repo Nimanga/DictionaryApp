@@ -33,6 +33,37 @@ const MainFlatList = () => {
   const [itemWord, setItemWord] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [visibleData, setVisibleData] = useState([]);
+  const [startIdx, setStartIdx] = useState(0);
+  const [endIdx, setEndIdx] = useState(15);
+
+  // const fetchData = () => {
+  //   console.log('FetchData');
+  //   const newData = Array.from({length: 2000}, (_, index) => `Loadings..`);
+  //   setChangeLists(newData);
+  // };
+
+  const updateVisibleData = () => {
+    console.log('updateVisibleData');
+
+    setVisibleData(changeLists.slice(startIdx, endIdx));
+  };
+
+  console.log(visibleData);
+
+  const handleEndReached = () => {
+    setStartIdx(prevStartIdx => prevStartIdx + 1);
+    setEndIdx(prevEndIdx => prevEndIdx + 50);
+    updateVisibleData();
+  };
+
+  console.log('index', startIdx);
+
+  useEffect(() => {
+    // fetchData();
+    handleEndReached();
+  }, []);
+
   const handleEnWordsListed = wordList1 => {
     setTemEnWordLists(wordList1);
     setChangeLists(wordList1);
@@ -85,6 +116,13 @@ const MainFlatList = () => {
     setLoading(true);
   };
 
+  const renderLoader = () => {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#65a765" />
+      </View>
+    );
+  };
   console.log(mainListDefinition);
 
   return (
@@ -126,6 +164,8 @@ const MainFlatList = () => {
                 </TouchableOpacity>
               </View>
             )}
+            onEndReached={handleEndReached}
+            onEndReachedThreshold={0.1}
           />
         </View>
         <View>
@@ -159,7 +199,7 @@ const MainFlatList = () => {
                 ) : (
                   <>
                     <View style={{marginTop: '30%', marginBottom: '59%'}}>
-                      <ActivityIndicator size="large" color="#65a765" />
+                      <ActivityIndicator size="small" color="#65a765" />
                     </View>
                   </>
                 )}

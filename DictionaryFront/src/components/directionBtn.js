@@ -48,8 +48,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#324B77',
     padding: '0.5%',
     paddingStart: '6%',
-    paddingEnd: '-1%',
-    margin: '4%',
+    paddingEnd: '6%',
+    // paddingBottom: '2%',
+    // paddingTop: '2%',
+    margin: '2%',
+
     borderRadius: 5,
     color: '#ffffff',
     fontSize: 15,
